@@ -1,7 +1,8 @@
 FROM alpine:latest
 RUN apk add --no-cache coturn
 EXPOSE 3478/tcp 3478/udp
-CMD coturn -n \
+# Поменяла "coturn" на "turnserver" — так он называется в этой версии Linux
+CMD turnserver -n \
     --log-file=stdout \
     --lt-cred-mech \
     --user=$TURN_USER:$TURN_PASS \
