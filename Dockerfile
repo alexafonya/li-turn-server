@@ -1,10 +1,16 @@
 FROM alpine:latest
+
+# Устанавливаем сервер
 RUN apk add --no-cache coturn
-EXPOSE 3478/tcp 3478/udp
-# Поменяла "coturn" на "turnserver" — так он называется в этой версии Linux
+
+# Открываем порт
+EXPOSE 3478
+
+# Запуск с упрощенными флагами
+# Мы убираем сложные проверки и запускаем максимально прямо
 CMD turnserver -n \
     --log-file=stdout \
-    --lt-cred-mech \
+    --external-ip=$(wget -qO- https://ifconfig.me) \
     --user=$TURN_USER:$TURN_PASS \
-    --realm=living-israel-church \
-    --external-ip=$(wget -qO- https://ifconfig.me)
+    --realm=livingisrael \
+    --lt-cred-mech
