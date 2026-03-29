@@ -3,14 +3,8 @@ FROM alpine:latest
 # Устанавливаем сервер
 RUN apk add --no-cache coturn
 
-# Открываем порт
-EXPOSE 3478
+# Открываем порты (TCP и UDP)
+EXPOSE 3478/tcp 3478/udp
 
-# Запуск с упрощенными флагами
-# Мы убираем сложные проверки и запускаем максимально прямо
-CMD turnserver -n \
-    --log-file=stdout \
-    --external-ip=$(wget -qO- https://ifconfig.me) \
-    --user=$TURN_USER:$TURN_PASS \
-    --realm=livingisrael \
-    --lt-cred-mech
+# Используем оболочку sh, чтобы переменные TURN_USER и TURN_PASS точно подставились
+CMD ["sh", "-c", "turnserver -n --lt-cred-mech --user=${TURN_USER}:${TURN_PASS} --realm=livingisrael --log-file=stdout --external-ip=$(wget -qO- https://ifconfig.me)"]
